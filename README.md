@@ -1,5 +1,5 @@
 # msc2019
-The code for my master's thesis at the ETH Computer Vision Lab. It was written in Python 3.6.
+The code for my master's thesis at the ETH Computer Vision Lab, written in Python 3.6.
 
 ## Packages needed:
 - PyTorch 1.1.0
