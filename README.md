@@ -1,6 +1,8 @@
 # msc2019
 The code for my master's thesis at the ETH Computer Vision Lab, written in Python 3.6.
 
+Main file: run_gustavs_splits.py
+
 ## Packages needed:
 - PyTorch 1.1.0
 - NumPy
