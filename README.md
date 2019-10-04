@@ -14,3 +14,4 @@ The code for my master's thesis at the ETH Computer Vision Lab, written in Pytho
 - OpenCV
 - h5py
 - torchsummary
+- pandas
