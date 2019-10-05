@@ -17,3 +17,11 @@ Main file: run_gustavs_splits.py
 - h5py
 - torchsummary
 - pandas
+
+## Change the following lines in the code to your locations of the data files:
+- run_gustavs_splits.py
+  - 226
+  - 302 - 309
+  - 368 - 373
+- utils/shlynur_create_brats_data_gustavs_split.py
+  - 254 - 255
