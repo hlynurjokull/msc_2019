@@ -53,14 +53,14 @@ def print_memory_usage(status=''):
 def print_current_epoch_results(current_epoch, total_epochs, training_loss, validation_loss, training_accuracy,
                                 validation_accuracy, bool_prostate_data, bool_binary_testing):
     """
-
+    Prints the current training and validation accuracy & loss.
     :param current_epoch:
     :param total_epochs:
     :param training_loss:
     :param validation_loss:
     :param training_accuracy:
     :param validation_accuracy:
-    :param bool_prostate_data:
+    :param bool_prostate_data: True for prostate, False for BraTS.
     :param bool_binary_testing:
     :return:
     """
@@ -84,12 +84,6 @@ def print_current_epoch_results(current_epoch, total_epochs, training_loss, vali
                   .format(current_epoch + 1, total_epochs, training_loss, validation_loss, training_accuracy[0],
                           training_accuracy[1], training_accuracy[2], validation_accuracy[0], validation_accuracy[1],
                           validation_accuracy[2], np.mean(validation_accuracy)))
-            # print("Epoch {:3d} / {} \tTrain / val loss: {:.4f} / {:.4f} \tTrain / val acc: [{:.4f}, {:.4f}, {:.4f}, "
-            #       "{:.4f}] / [{:.4f}, {:.4f}, {:.4f}, {:.4f}] \tSignificant convergence: {:.4f}"
-            #       .format(current_epoch + 1, total_epochs, training_loss, validation_loss, training_accuracy[0],
-            #               training_accuracy[1], training_accuracy[2], training_accuracy[3], validation_accuracy[0],
-            #               validation_accuracy[1], validation_accuracy[2], validation_accuracy[3],
-            #               np.mean(validation_accuracy[1:])))
 
 
 def plot_accuracy_images(model, filename, class_num, training_list, validation_list):
@@ -129,19 +123,6 @@ def plot_inter_cnn_images(images, labels, prediction, incorrect_predictions, new
     for i in range(len(plot_labels)):
         axes[0, i].set_title(plot_labels[i])
 
-    # axes[0, 0].set_title('Image')
-    # axes[0, 1].set_title('Label')
-    # axes[0, 2].set_title('Prediction')
-    # axes[0, 3].set_title('inc_pred 0')
-    # axes[0, 4].set_title('inc_pred 1')
-    # axes[0, 5].set_title('inc_pred 2')
-    # axes[0, 6].set_title('inc_label 0')
-    # axes[0, 7].set_title('inc_label 1')
-    # axes[0, 8].set_title('inc_label 2')
-    # axes[0, 9].set_title('scribble 0')
-    # axes[0, 10].set_title('scribble 1')
-    # axes[0, 11].set_title('scribble 2')
-
     for ax_index in range(a):
         slice_no = ax_index + 10
         axes[ax_index, 0].imshow(images[0, 0, slice_no, :, :])
@@ -165,7 +146,6 @@ def plot_inter_cnn_images(images, labels, prediction, incorrect_predictions, new
     plt.savefig(filename + '.svg', bbox_inches='tight', transparent=True)
     plt.savefig(filename + '.pdf', bbox_inches='tight', transparent=True)
     plt.close(fig_images)
-    # print('InterCNN image saved.')
 
 
 def plot_loss_images(loss_list, filename, mode):
@@ -178,9 +158,6 @@ def plot_loss_images(loss_list, filename, mode):
 
     plt.plot(x_axis, loss_list)
     plt.legend(plot_labels, fontsize=16)
-    # plt.plot(x_axis, loss_list[:, 0], label=labels[0])
-    # plt.plot(x_axis, loss_list[:, 1], label=labels[1])
-    # plt.legend()
     plt.xlabel('Epoch', fontsize=18)
     plt.ylabel('Loss', fontsize=18)
     plt.savefig(os.path.join('images', filename + '.png'), bbox_inches='tight', transparent=True)
@@ -200,37 +177,37 @@ def brats_prostate_gustavs_splits(
         bool_loss_summation=False, number_of_scribbles=1, size_of_scribble=4, bool_best_placement=False):
     """
 
-    :param seed:
-    :param bool_prostate_data:
-    :param model_type:
-    :param num_filters_auto_cnn:
-    :param num_filters_inter_cnn:
-    :param num_epochs_auto_cnn:
-    :param num_epochs_inter_cnn:
-    :param batch_size:
-    :param learning_rate:
-    :param lr_wd: weight decay of the learning rate
+    :param seed: random seed.
+    :param bool_prostate_data: True for prostate, False for BraTS.
+    :param model_type: 'gustav' or 'robin'.
+    :param num_filters_auto_cnn: Number of AutoCNN filters.
+    :param num_filters_inter_cnn: Number of InterCNN filters.
+    :param num_epochs_auto_cnn: Number of AutoCNN epochs.
+    :param num_epochs_inter_cnn: Number of InterCNN epochs.
+    :param batch_size: Batch size.
+    :param learning_rate: Learning rate.
+    :param lr_wd: Weight decay of the learning rate
     :param bool_load_previous_checkpoint: A list containing True/False statements to load a previous checkpoint.
         If the first item is True, a previous autoCNN checkpoint is loaded.
         If the second item is True, a previous interCNN checkpoint is loaded.
     :param load_model_folder: The folder/s that contain the model/s to be loaded if the previous boolean is True.
     :param load_model_file: The model/s that will be loaded if the previous boolean is True.
-    :param loss_weight:
-    :param max_iterations_train:
-    :param max_iterations_test:
-    :param bool_auto_cnn_train:
-    :param bool_inter_cnn_train:
-    :param bool_save_results:
-    :param bool_data_augmentation:
-    :param inter_number_of_slices:
-    :param inter_scribble_mode:
-    :param operating_system:
-    :param gustav_split:
-    :param bool_binary_testing:
-    :param bool_loss_summation:
-    :param number_of_scribbles:
-    :param size_of_scribble:
-    :param bool_best_placement:
+    :param loss_weight: A vector containing the weights of the class labels.
+    :param max_iterations_train: Number of InterCNN training iterations.
+    :param max_iterations_test: Number of InterCNN testing iterations.
+    :param bool_auto_cnn_train: True to train the AutoCNN, False to skip.
+    :param bool_inter_cnn_train: True to train the InterCNN, False to skip.
+    :param bool_save_results: True to save the results.
+    :param bool_data_augmentation: True to enable data augmentation.
+    :param inter_number_of_slices: Select the no. slices to create 2D scribbles in, 'one' or 'all'.
+    :param inter_scribble_mode: '2d' or '3d'.
+    :param operating_system: 'windows' or 'linux'.
+    :param gustav_split: Select the data split number (1-5).
+    :param bool_binary_testing: True to enable the binary configuration, False for the default configuration.
+    :param bool_loss_summation: True to enable loss summation (problems with GPU memory).
+    :param number_of_scribbles: Number of 3D scribbles to create for each class in the volume.
+    :param size_of_scribble: Size of each scribble. Size of sigma (default 4).
+    :param bool_best_placement: True to place the scribbles in the largest connected component.
 
     :return:
     """
@@ -244,9 +221,7 @@ def brats_prostate_gustavs_splits(
         print('=== Every volume now has 15 slices. ===')
     print('*' * 25 + 'INTER SCRIBBLE MODE: {}'.format(inter_scribble_mode) + '*' * 25)
     if bool_binary_testing:
-        print(':) :) :) :) :) Binary testing stuff :) :) :) :) :) ')
-
-    # print('\nAdded: the scribbles are now placed in the largest connected component.\n')
+        print('Binary testing.')
 
     save_folder = '/scratch_net/giggo/shlynur/msc/polybox/M.Sc.2019/code/shlynur_unet_testing/3d_results'
     save_folder = os.path.join(save_folder, '{}_split_{}_iterations_{}_{}_mode_{}'.format(
@@ -286,11 +261,11 @@ def brats_prostate_gustavs_splits(
     print("Data augmentation: {}".format('True' if bool_data_augmentation else 'False'))
     print("Saving results: {}".format('True' if bool_save_results else 'False'))
     if bool_auto_cnn_train & bool_inter_cnn_train:
-        training_str = "auto_CNN & inter_CNN."
+        training_str = "AutoCNN & InterCNN."
     elif bool_auto_cnn_train:
-        training_str = "auto_CNN."
+        training_str = "AutoCNN."
     elif bool_inter_cnn_train:
-        training_str = "inter_CNN."
+        training_str = "InterCNN."
     else:
         training_str = "None."
     print("Training: " + training_str)
@@ -301,7 +276,6 @@ def brats_prostate_gustavs_splits(
     channels_inter = channels_auto + num_classes + 1
     if bool_loss_summation:
         channels_inter += 2
-    # channels_inter = 5 if bool_prostate_data else 10
     padding = (1, 1, 1)  # if bool_prostate_data else (0, 0, 0)
     max_pooling_d = 1  # if bool_prostate_data else 2
     num_workers = 8  # if bool_prostate_data else 8
@@ -338,7 +312,7 @@ def brats_prostate_gustavs_splits(
         data_path_tr = os.path.join(data_folder, 'Prostate-3T/Prostate3T-01-')
         seg_path_tr = os.path.join(data_folder, 'NCI_ISBI_Challenge-Prostate3T_Training_Segmentations/Prostate3T-01-')
 
-        # # Create a random list
+        # # Create a random list (this ignores the gustav data splits)
         # list_total = random.sample(range(1, 31), 30)
         # list_total.remove(19)
         # list_total = ['{:04d}'.format(x) for x in list_total]
@@ -441,15 +415,13 @@ def brats_prostate_gustavs_splits(
     else:
         raise ValueError('The variable model_type must be either "gustav" or "robin"')
 
-    # Create the optimizers.
+    # Create the optimizers and learning rate schedulers.
     optimizer_auto = Adam(params=cnn_auto.parameters(), lr=learning_rate)
     scheduler_auto = lr_scheduler.ReduceLROnPlateau(optimizer=optimizer_auto, mode='min', factor=0.99,
                                                     patience=100, verbose=True)
-    # scheduler_auto = lr_scheduler.CyclicLR(optimizer=optimizer_auto, base_lr=5e-4, max_lr=3e-3)
     optimizer_inter = Adam(params=cnn_inter.parameters(), lr=learning_rate)
     scheduler_inter = lr_scheduler.ReduceLROnPlateau(optimizer=optimizer_inter, mode='min', factor=0.99,
                                                      patience=10, verbose=True)
-    # scheduler_inter = lr_scheduler.StepLR(optimizer=optimizer_inter, step_size=10, gamma=0.1)
     print_memory_usage(status='Before training everything')
 
     criterion = nn.CrossEntropyLoss(weight=loss_weight)
@@ -570,41 +542,6 @@ def brats_prostate_gustavs_splits(
                         train_average_classes.append(train_batch_score)
                         del new_labels, new_outputs, train_max_in
 
-                # Forward + Backward + Optimizer
-                # optimizer_auto.zero_grad()
-                # outputs = cnn_auto(images)
-                # del images
-                # loss = criterion(outputs, labels)
-                # loss = cross_entropy3d(network_output=outputs, target_output=labels, weight=loss_weight,
-                #                        size_average=False)
-                # loss = brats_dice_loss(outputs=outputs, labels=labels, non_squared=False)
-                # loss = brats_dice_loss_original_4(outputs=outputs, labels=labels, non_squared=False)
-                # loss.backward()
-                # Weight decay stuff
-                # for group in optimizer_auto.param_groups:
-                #     for param in group['params']:
-                #         param.data = param.data.add(-lr_wd * group['lr'], param.data)
-                # optimizer_auto.step()
-                # running_loss += loss.item()
-
-                # Training accuracy calculations
-                # cnn_auto.eval()
-                # train_batch_score = []
-                # train_max_in = train_activation(outputs)
-                # train_max_in = torch.max(train_max_in, 1)[1]
-                # # train_max_in = train_max_in.type(torch.LongTensor)
-                # for b in range(labels.shape[0]):
-                #     if bool_prostate_data:
-                #         train_classes_score = class_dice_3d_prostate(
-                #             target=labels[b, :, :, :], prediction=train_max_in[b, :, :, :], class_num=num_classes)
-                #     else:
-                #         train_classes_score = class_dice_3d_brats(
-                #             target=labels[b, :, :, :], prediction=train_max_in[b, :, :, :])
-                #     train_batch_score.append(train_classes_score)
-                # train_average_classes.append(train_batch_score)
-                #
-                # del labels, outputs, train_activation, train_max_in
-
             train_average_classes = np.squeeze(np.array(train_average_classes))
             train_mean_average_classes = np.mean(train_average_classes, axis=0)
             if len(dataloader_auto_cnn_train.dataset) == 1:
@@ -619,7 +556,6 @@ def brats_prostate_gustavs_splits(
                 data_loader=dataloader_auto_cnn_val)
 
             class_score_validation_list[epoch, :] = class_scores_validating
-            # convergence_list[epoch] = np.mean(class_scores_validating[1:])
 
             scheduler_auto.step(val_loss)
 
@@ -646,29 +582,6 @@ def brats_prostate_gustavs_splits(
                                         validation_loss=val_loss, training_accuracy=class_scores_training,
                                         validation_accuracy=class_scores_validating,
                                         bool_prostate_data=bool_prostate_data, bool_binary_testing=bool_binary_testing)
-
-            # if bool_prostate_data:
-            #     if inter_scribble_mode == '2d':
-            #         print("Epoch {:3d} / {} \tTrain / val loss: {:.4f} / {:.4f} \tTrain / val acc: [{:.4f}, {:.4f}, "
-            #               "{:.4f}] / [{:.4f}, {:.4f}, {:.4f}] \tSignificant convergence: {:.4f}"
-            #               .format(epoch + 1, num_epochs_auto_cnn, train_loss, val_loss, class_scores_training[0],
-            #                       class_scores_training[1], class_scores_training[2], class_scores_validating[0],
-            #                       class_scores_validating[1], class_scores_validating[2],
-            #                       np.mean(class_scores_validating[1:])))
-            #     else:
-            #         print("Epoch {:3d} / {} \tTrain / val loss: {:.4f} / {:.4f} \tTrain / val acc: [{:.4f}, {:.4f}] "
-            #               " / [{:.4f}, {:.4f}] \tSignificant convergence: {:.4f}"
-            #               .format(epoch + 1, num_epochs_auto_cnn, train_loss, val_loss, class_scores_training[0],
-            #                       class_scores_training[1], class_scores_validating[0], class_scores_validating[1],
-            #                       np.mean(class_scores_validating[1:])))
-            # else:
-            #     print("Epoch {:3d} / {} \tTrain / val loss: {:.4f} / {:.4f} \tTrain / val acc: [{:.4f}, {:.4f}, "
-            #           "{:.4f}, {:.4f}] / [{:.4f}, {:.4f}, {:.4f}, {:.4f}] \tSignificant convergence: {:.4f}"
-            #           .format(epoch + 1, num_epochs_auto_cnn, train_loss, val_loss, class_scores_training[0],
-            #                   class_scores_training[1], class_scores_training[2], class_scores_training[3],
-            #                   class_scores_validating[0], class_scores_validating[1], class_scores_validating[2],
-            #                   class_scores_validating[3], np.mean(class_scores_validating[1:])))
-            # # list(np.around(class_scores_training, 4)), list(np.around(class_scores_validating, 4)),
 
             # Save the parameters
             if bool_save_results:
@@ -734,9 +647,6 @@ def brats_prostate_gustavs_splits(
         # Initialize variables.
         loss_list = np.zeros((num_epochs_inter_cnn, 2))
         class_scores_auto_cnn_val_list = []
-        # class_scores_inter_cnn_train_list, class_scores_inter_cnn_val_list = [], []
-        # class_scores_inter_cnn_train_list = np.zeros((num_epochs_inter_cnn, num_classes))
-        # class_scores_inter_cnn_val_list = np.zeros((num_epochs_inter_cnn, num_classes))
         convergence_list = np.zeros(num_epochs_inter_cnn)
         inter_cnn_timer = time.time()
         iterations_scores = 0
@@ -855,8 +765,6 @@ def brats_prostate_gustavs_splits(
                         # Training accuracy
                         cnn_inter.eval()
                         train_batch_score = []
-                        # train_max_in = train_activation(outputs_inter)
-                        # train_max_in = torch.max(train_max_in, 1)[1]
 
                         for b in range(labels.shape[0]):
                             train_classes_score = class_dice_3d_prostate(target=labels[b, :, :, :],
@@ -865,8 +773,6 @@ def brats_prostate_gustavs_splits(
                             train_batch_score.append(train_classes_score)
                         train_class_scores_inter_cnn_iterations.append(train_batch_score)
                         cnn_inter.train()
-
-                        # del outputs_inter
 
                     train_average_classes.append(train_class_scores_inter_cnn_iterations)
 
@@ -963,8 +869,6 @@ def brats_prostate_gustavs_splits(
                             # Training accuracy
                             cnn_inter.eval()
                             train_batch_score = []
-                            # train_max_in = train_activation(outputs_inter)
-                            # train_max_in = torch.max(train_max_in, 1)[1]
 
                             for b in range(new_labels.shape[0]):
                                 train_classes_score = class_dice_3d_prostate(target=new_labels[b, :, :, :],
@@ -998,10 +902,8 @@ def brats_prostate_gustavs_splits(
 
             scheduler_inter.step(val_loss)
 
-            # class_scores_inter_cnn_train_list.append(train_inter_cnn_score)
             class_scores_inter_cnn_train_list[epoch, :] = train_inter_cnn_score
             class_scores_auto_cnn_val_list.append(class_scores_auto_new)
-            # class_scores_inter_cnn_val_list.append(class_scores_inter_new)
             class_scores_inter_cnn_val_list[epoch, :] = class_scores_inter_new
             convergence_list[epoch] = np.mean(class_scores_inter_new)
 
@@ -1217,13 +1119,6 @@ def brats_prostate_gustavs_splits(
             .format(model_type, 'prostate' if bool_prostate_data else 'brats', num_epochs_inter_cnn,
                     num_filters_inter_cnn, learning_rate, bool_data_augmentation, i)
         np.save(os.path.join('iterations', iterations_str_3d), class_scores_inter_cnn_iterations_3d)
-
-        # np.save(
-        #     os.path.join('iterations',
-        #                  'intercnn_3D_model_{}_data_{}_epochs_{}_filters_{}_lr_{}_dataug_{}_test_scores_sample_{}'
-        #                  .format(model_type, 'prostate' if bool_prostate_data else 'brats', num_epochs_inter_cnn,
-        #                          num_filters_inter_cnn, learning_rate, bool_data_augmentation, i)),
-        #     class_scores_inter_cnn_iterations)
 
         print("Sample {:2d} / {} \t2D autoCNN/interCNN accuracy: {} / {} "
               "\tSignificant 2D autoCNN/interCNN accuracy: {:.4f} / {:.4f}"
